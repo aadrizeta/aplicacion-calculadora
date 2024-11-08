@@ -135,12 +135,13 @@ public class MainActivity extends AppCompatActivity {
         botonResultado.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!pantalla.getText().toString().isEmpty() || !pantalla2.getText().toString().isEmpty() || !textViewOperador.getText().toString().isEmpty()){
+                if (!pantalla.getText().toString().isEmpty() || !pantalla2.getText().toString().isEmpty() || !textViewOperador.getText().toString().isEmpty()) {
                     int num1 = Integer.parseInt(pantalla2.getText().toString());
                     int num2 = Integer.parseInt(pantalla.getText().toString());
                     String operador = textViewOperador.getText().toString();
-                    int resultado = 0;
-                    switch (operador){
+                    double resultado = 0.0;  // Usamos double para manejar resultados decimales
+
+                    switch (operador) {
                         case "+":
                             resultado = num1 + num2;
                             break;
@@ -151,18 +152,35 @@ public class MainActivity extends AppCompatActivity {
                             resultado = num1 * num2;
                             break;
                         case "/":
-                            if (!(num2 == 0)){
-                                resultado = num1 / num2;
+                            if (num2 != 0) {
+                                // Comprobamos si el resultado de la división tiene decimales
+                                resultado = (double) num1 / num2;  // Realizamos la división como double
                             } else {
                                 msgError.show();
                             }
+                            break;
                     }
-                    pantalla.setText(String.valueOf(resultado));
-                    pantalla2.setText("");
+
+                    // Comprobamos si el resultado es un número entero (sin decimales)
+                    if (resultado == (int) resultado) {
+                        // Si es entero, mostramos como entero
+                        pantalla.setText(String.valueOf((int) resultado));
+                    } else {
+                        // Si tiene decimales, mostramos como double con decimales
+                        pantalla.setText(String.valueOf(resultado));
+                    }
+
+                    // Actualizamos la pantalla2 para mostrar la operación
+                    pantalla2.setText(String.valueOf(num1) + operador + String.valueOf(num2) + " =");
+
+                    // Limpiamos el operador
                     textViewOperador.setText("");
+                } else {
+                    msgError.show();
                 }
             }
         });
+
 
     }
 }
